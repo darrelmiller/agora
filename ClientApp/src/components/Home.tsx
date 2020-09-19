@@ -1,23 +1,25 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Editor } from './Editor';
-import { Button } from 'reactstrap';
+import { CsdlValidator } from './CsdlValidator';
 
-interface IHomeProps {
-  submitData: (textValue: string) => Promise<void>;
-}
 
-const Home = (props: IHomeProps) => {
-  const [textAreaValue, setTextAreaValue] = React.useState('');
-  const process = () => {
-    void props.submitData(textAreaValue);
-  }
-  return (<div>
+const Home = () => (<div>
             <h1>Agora</h1>
             <h2>CSDL to process</h2>
-            <textarea id="csdlEditor" className="Editor" name="csdl" value={textAreaValue} onChange={(val) => setTextAreaValue(val)} />
-            <button onClick={process} />
+            <CsdlValidator submitData={getData}  />
           </div>);
-};
 
 export default connect()(Home);
+
+ function getData(csdl:string) : Promise<void> {
+  console.log(csdl);
+  const opts:RequestInit = {
+    method: "POST",
+    body: csdl 
+  };
+
+  return fetch("https://localhost:5001/CsdlImage", opts)
+      .then(response => console.log(response.body))
+  
+  //return null;
+} 

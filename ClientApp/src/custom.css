@@ -12,6 +12,11 @@ code {
   height: 270px;
 }
 
+.csdlButton {
+  height: 70px;
+  width: 70px;
+}
+
 .btn-primary {
   color: #fff;
   background-color: #1b6ec2;
