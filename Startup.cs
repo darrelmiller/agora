@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Identity.Client;
 
 namespace Agora
 {
@@ -22,6 +23,16 @@ namespace Agora
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            var clientApp = ConfidentialClientApplicationBuilder.Create(Configuration["Agora:clientId"])
+                                .WithClientSecret(Configuration["Agora:clientSecret"])
+                                .WithTenantId(Configuration["Agora:tenantId"])
+                                .Build();
+                                
+            services.AddSingleton<ResourceStore>();
+            services.AddHttpClient("default", (client) => {
+                
+            }).AddHttpMessageHandler(sp => { return new AuthHandler(clientApp); });
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

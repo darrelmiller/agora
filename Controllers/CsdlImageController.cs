@@ -16,10 +16,12 @@ namespace Agora
     {
 
         private readonly ILogger<CsdlImageController> _logger;
+        private readonly ResourceStore _resourceStore;
 
-        public CsdlImageController(ILogger<CsdlImageController> logger)
+        public CsdlImageController(ILogger<CsdlImageController> logger, ResourceStore resourceStore)
         {
             _logger = logger;
+            _resourceStore = resourceStore;
         }
 
         [HttpPost]
@@ -36,7 +38,11 @@ namespace Agora
 
             var bytes = await renderer.RenderAsync(plant, OutputFormat.Svg);
 
-            return new FileContentResult(bytes, new Microsoft.Net.Http.Headers.MediaTypeHeaderValue("image/svg+xml"));
+            var idx = Guid.NewGuid().ToString();
+            _resourceStore.SetItem(idx, bytes);
+
+            var url = this.Url.Action("Get","UmlDiagram", new {id = idx });
+            return Created(url, null);
         }
     }
 }

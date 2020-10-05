@@ -1,15 +1,13 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps, MapStateToPropsParam } from 'react-redux';
 import { Editor } from './Editor';
 import { Button } from 'reactstrap';
-import { ApplicationState } from '../store';
+import { ApplicationState, useTypedSelector } from '../store';
 import * as ApiDescriptionStore from '../store/ApiDescription';
-import { RouteComponentProps } from 'react-router';
-import { useSelector, useDispatch } from 'react-router';
+import { RouteComponentProps, StaticContext } from 'react-router';
+import { useSelector, useDispatch } from 'react-redux';
+import { ApiDescriptionState } from '../store/ApiDescription';
 
-interface IHomeProps {
-  submitData: (textValue: string) => Promise<void>;
-}
 
 // At runtime, Redux will merge together...
 type ApiDescriptionProps =
@@ -18,25 +16,32 @@ type ApiDescriptionProps =
   & RouteComponentProps<{}>; // ... plus incoming routing parameters
 
 
-const CsdlValidator = (props)  => {
-  const state = userSel
+export const CsdlValidator = ()  => {
+  const apiDescriptionState = useTypedSelector(state => state.apiDescription );
+  const csdl = useTypedSelector(state => state.apiDescription?.csdl);
+  const dispatch = useDispatch();
   
-    const [textAreaValue, setTextAreaValue] = React.useState('');
   const process = () => {
-    void props.submitData(textAreaValue);
+    dispatch(ApiDescriptionStore.actionCreators.processCSDL());  
   }
+
   return (<div>
             <textarea id="csdlEditor" className="Editor" name="csdl" 
-                                        value={textAreaValue} 
-                                        onChange={(event) => setTextAreaValue(event.target.value)} />
+                                        value={csdl} 
+                                        onChange={(event) => ApiDescriptionStore.actionCreators.updateCsdl(event.target.value)} />
             <button id="csdlButton" onClick={process}>Submit</button>
-            <img src="" />  
+            <img src={apiDescriptionState?.umlDiagram} />  
           </div>);
 };
 
-export default connect(
-    (state: ApplicationState) => state.apiDescription, // Selects which state properties are merged into the component's props
-    ApiDescriptionStore.actionCreators // Selects which action creators are merged into the component's props
-  )(CsdlValidator);
+// const mapState = (state: ApplicationState ) => ({ apiDescription: state.apiDescription });
+// const mapDispatch = ApiDescriptionStore.actionCreators
 
-//export default connect()(Home);
+// const connector = connect(
+//     mapState, // Selects which state properties are merged into the component's props
+//     mapDispatch // Selects which action creators are merged into the component's props
+//   )
+  
+// //type PropsFromRedux = ConnectedProps<ApiDescriptionProps>
+
+// export default connector(CsdlValidator);

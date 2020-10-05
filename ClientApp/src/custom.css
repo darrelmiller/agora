@@ -7,14 +7,26 @@ code {
   color: #E01A76;
 }
 
-.Editor {
-  margin: 10px;
+#csdlEditor {
+  display: block;
   height: 270px;
+  width: 800px;
 }
-
-.csdlButton {
-  height: 70px;
-  width: 70px;
+#openApiEditor {
+  display: block;
+  height: 270px;
+  width: 800px;
+}
+#csdlWarnings {
+  display: block;
+  height: 270px;
+  width: 800px;
+}
+#csdlButton {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  height: 50px;
+  width: 120px;
 }
 
 .btn-primary {
