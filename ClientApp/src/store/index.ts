@@ -1,7 +1,6 @@
 import * as WeatherForecasts from './WeatherForecasts';
 import * as Counter from './Counter';
 import * as ApiDescription from './ApiDescription';
-import { useSelector, TypedUseSelectorHook } from 'react-redux';
 
 // The top-level state object
 export interface ApplicationState {
@@ -18,8 +17,6 @@ export const reducers = {
     weatherForecasts: WeatherForecasts.reducer,
     apiDescription: ApiDescription.reducer
 };
-
-export const useTypedSelector: TypedUseSelectorHook<ApplicationState> = useSelector
 
 
 // This type can be used as a hint on action creators so that its 'dispatch' and 'getState' params are

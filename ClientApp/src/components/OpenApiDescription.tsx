@@ -13,7 +13,7 @@ type ApiDescriptionProps =
 
 const OpenApiDescription = (props: ApiDescriptionProps)  => {
 
-    return (<div>
+    return (<div id="openApiDescription">
               <textarea id="openApiEditor" className="Editor" name="csdl" 
                                           value={props.openApi}
                                           readOnly 

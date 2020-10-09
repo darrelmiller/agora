@@ -6,11 +6,28 @@ a {
 code {
   color: #E01A76;
 }
-
+body {
+  height: 1000px;
+}
+#root {
+  height: 100%;
+}
+.container {
+  height: 100%;
+}
+#agoraPane {
+  height: 100%;
+}
+#apiDescription {
+  height: 100%;
+}
 #csdlEditor {
   display: block;
-  height: 270px;
+  height: 50%;
   width: 800px;
+}
+#openApiDescription {
+  height: 100%;
 }
 #openApiEditor {
   display: block;
@@ -19,7 +36,7 @@ code {
 }
 #csdlWarnings {
   display: block;
-  height: 270px;
+  height: auto;
   width: 800px;
 }
 #csdlButton {

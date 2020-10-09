@@ -22,33 +22,41 @@ namespace Agora
 
         private readonly ILogger<CsdlImageController> _logger;
         private readonly ResourceStore _resourceStore;
+        private readonly HttpClient _client;
 
-        public OpenApiController(ILogger<CsdlImageController> logger, ResourceStore resourceStore)
+        public OpenApiController(ILogger<CsdlImageController> logger, ResourceStore resourceStore, IHttpClientFactory clientFactory)
         {
             _logger = logger;
             _resourceStore = resourceStore;
+            _client = clientFactory.CreateClient("default");
         }
 
+        
         [HttpPost]
         public async Task<IActionResult> Post()
         {
            
             var csdl = await new StreamReader(Request.Body).ReadToEndAsync();
-            OpenApiDocument doc;
-            
-            try {
-                doc = ConvertCsdlToOpenApi(csdl);
-            } catch(Exception ex) {
-                return BadRequest(ex.Message);
+
+            var request = new HttpRequestMessage()
+            {
+                RequestUri = new Uri("https://graphexplorerapi.azurewebsites.net/openapi?operationIds=*&style=PowerShell"),
+                Method = HttpMethod.Post,
+                Content = new StringContent(csdl)
+            };
+
+            Stream openApiStream;
+            var response = await _client.SendAsync(request);
+            if (response.IsSuccessStatusCode)
+            {
+                openApiStream = await response.Content.ReadAsStreamAsync();
+            }
+            else
+            {
+                return BadRequest(await response.Content.ReadAsStringAsync());
             }
 
-            var stream = new MemoryStream();
-            var sr = new StreamWriter(stream);
-            var writer = new OpenApiYamlWriter(sr);
-            doc.SerializeAsV3(writer);
-            sr.Flush();
-
-            var bytes = stream.ToArray();
+            var bytes = ReadAllBytes(openApiStream);
 
             var idx = Guid.NewGuid().ToString();
             _resourceStore.SetItem(idx, bytes);
@@ -97,6 +105,48 @@ namespace Agora
 
             return document;
         }
+
+        public byte[] ReadAllBytes(Stream source)
+        {
+            long originalPosition = source.Position;
+            source.Position = 0;
+
+            try
+            {
+                byte[] readBuffer = new byte[4096];
+                int totalBytesRead = 0;
+                int bytesRead;
+                while ((bytesRead = source.Read(readBuffer, totalBytesRead, readBuffer.Length - totalBytesRead)) > 0)
+                {
+                    totalBytesRead += bytesRead;
+                    if (totalBytesRead == readBuffer.Length)
+                    {
+                        int nextByte = source.ReadByte();
+                        if (nextByte != -1)
+                        {
+                            byte[] temp = new byte[readBuffer.Length * 2];
+                            Buffer.BlockCopy(readBuffer, 0, temp, 0, readBuffer.Length);
+                            Buffer.SetByte(temp, totalBytesRead, (byte)nextByte);
+                            readBuffer = temp;
+                            totalBytesRead++;
+                        }
+                    }
+                }
+
+                byte[] buffer = readBuffer;
+                if (readBuffer.Length != totalBytesRead)
+                {
+                    buffer = new byte[totalBytesRead];
+                    Buffer.BlockCopy(readBuffer, 0, buffer, 0, totalBytesRead);
+                }
+                return buffer;
+            }
+            finally
+            {
+                source.Position = originalPosition;
+            }
+        }
+
     }
 
     public class HttpContentResult : IActionResult

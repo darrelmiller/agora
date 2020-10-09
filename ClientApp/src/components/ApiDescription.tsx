@@ -17,16 +17,16 @@ type ApiDescriptionProps =
 
 const ApiDescription = (props: ApiDescriptionProps)  => {
 
-    return (<div>
-              <div>
+    return (<div id="apiDescription">
+
               <textarea id="csdlEditor" className="Editor" name="csdl" 
                                           value={props.csdl} 
                                           onChange={(event) =>{props.updateCsdl(event.target.value)}}
                                           />
                <button id="csdlButton" onClick={(event) =>{
                  props.processCSDL();}}>Submit</button>
-              </div>
-              <table className='table table-striped' aria-labelledby="tabelLabel">
+
+              <table id="csdlWarnings" className='table table-striped' aria-labelledby="tabelLabel">
               <thead>
                 <tr>
                   <th>Code</th>

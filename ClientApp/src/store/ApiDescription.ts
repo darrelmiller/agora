@@ -68,7 +68,6 @@ export const actionCreators = {
             fetch(`csdlValidation`, {method: "POST", body: appState.apiDescription.csdl})
                 .then(response => response.json() )
                 .then(data => { 
-                                console.log(data);
                                 dispatch({ type: 'RECEIVE_UPDATED_WARNINGS_REPORT', 
                                               warningsReport: data });
                             });
@@ -78,7 +77,6 @@ export const actionCreators = {
                 .then(async response => {return { openApiUrl: response.headers.get("Content-Location") as string,
                                     openApi: (await response.text()) };} )
                 .then(data => { 
-                                console.log(data.openApiUrl);
                                 dispatch({ type: 'RECEIVE_UPDATED_OPENAPI', 
                                               openApi: data.openApi,
                                               openApiUrl: data.openApiUrl });
@@ -96,7 +94,10 @@ export const actionCreators = {
 // REDUCER - For a given state and action, returns the new state. To support time travel, this must not mutate the old state.
 
 const unloadedState: ApiDescriptionState = { 
-    csdl: "<edmx:Edmx xmlns:edmx='http://docs.oasis-open.org/odata/ns/edmx' Version='4.0'/>", 
+    csdl: `<edmx:Edmx xmlns:edmx='http://docs.oasis-open.org/odata/ns/edmx' Version='4.0'>
+    <edmx:DataServices>
+    </edmx:DataServices>
+</edmx:Edmx>`, 
     umlDiagram: "", 
     openApi: "",
     openApiUrl: "", 
