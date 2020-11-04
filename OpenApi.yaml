@@ -1,0 +1,95 @@
+openapi: 3.0.3
+info:
+  title: API for Agora API Review tool
+  version: 1.0.0
+paths:
+  /CsdlImage:
+    post: 
+      requestBody:
+        content:
+          application/xml: {}
+      responses:
+        201: 
+          description: Created a
+          headers:
+            Location: 
+              description: Location of png file which is an diagram of the CSDL.  Points to UmlDiagram operation
+              schema: 
+                type: string
+  /CsdlValidation:
+    post:
+      requestBody:
+        content:
+          application/xml: {}
+      responses:
+        200:
+          description: Results of validation
+  /OpenApi:
+    post:
+      requestBody:
+        content:
+          application/xml: {}
+      responses:
+        200:
+          description: OpenAPI description of CSDL
+          headers:
+            Content-Location:
+              description: URL of OpenAPI description just created
+              schema:
+                type: string
+          content:
+            application/yaml: {}
+  /OpenApi/{id}:
+    get:
+      parameters:
+        - name: id
+          in: query
+          required: false
+          schema:
+            type: string  
+      responses:
+        200:
+          description: OpenAPI description of CSDL
+  /UmlDiagram:
+    get:
+      parameters:
+        - name: id
+          in: query
+          required: false
+          schema:
+            type: string  
+      responses:
+        200:
+          description: UML diagram of CSDL
+  /GraphIdentifiers:
+    get:
+      parameters:
+        - name: name
+          in: query
+          schema: 
+            type: string
+      responses:
+        200: 
+          description: identifiers that match the name
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  matches:
+                    type: array
+                    items: 
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        kind: 
+                          type: string
+                          enum:
+                            - type
+                            - property
+                            - relation
+                            - action
+                            - function
+                        
+

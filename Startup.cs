@@ -1,3 +1,4 @@
+using Agora.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -30,6 +31,8 @@ namespace Agora
                                 .Build();
                                 
             services.AddSingleton<ResourceStore>();
+            services.AddSingleton<VocabService>();
+
             services.AddHttpClient("default", (client) => {
                 
             }).AddHttpMessageHandler(sp => { return new AuthHandler(clientApp); });
