@@ -8,7 +8,6 @@ import UmlDiagram from './components/UmlDiagram';
 import OpenApiDescription from './components/OpenApiDescription';
 import SwaggerUIView from './components/SwaggerUIView';
 import GraphVocabularies from './components/GraphVocabularies';
-import { RouteComponentProps, useParams } from 'react-router-dom';
 import * as ApiDescriptionStore from './store/ApiDescription';
 import { useDispatch } from 'react-redux';
 
@@ -34,19 +33,4 @@ export default () => {
             <Route path='/vocabulary' component={GraphVocabularies} />
         </Layout>
     )
-};
-
-function parseQueryString(queryString: string) {
-    var params = {}, i, l;
-
-    // Split into key/value pairs
-    const queries: string[] = queryString.split("&");
-
-    // Convert the array of strings into an object
-    for (i = 0, l = queries.length; i < l; i++) {
-        const temp: string[] = queries[i].split('=');
-        params[temp[0]] = temp[1];
-    }
-
-    return params;
 };
