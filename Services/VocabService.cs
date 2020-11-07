@@ -52,9 +52,9 @@ namespace Agora.Services
                 betavocab = await GetVocab(GraphVersion.Beta);
             }
 
-            return betavocab.Where(v => v.Name.Contains(name))
-                .Union(v1vocab.Where(v => v.Name.Contains(name)))
-                .OrderBy(i => i.Name);
+            return betavocab.Where(v => v.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
+                .Union(v1vocab.Where(v => v.Name.Contains(name, StringComparison.OrdinalIgnoreCase)))
+                .OrderBy(i => i.Name + i.Version);
         }
 
         public async Task<IEnumerable<GraphIdentifier>> GetVocab(GraphVersion version = GraphVersion.V1)
@@ -75,7 +75,7 @@ namespace Agora.Services
             var model = await GetEdmModel(csdlurl);
             foreach (var element in model.SchemaElements)
             {
-                identifiers.Add(CreateGraphIdentifier(version, model, element));
+                
 
                 if (element.SchemaElementKind == EdmSchemaElementKind.TypeDefinition)
                 {
@@ -83,15 +83,19 @@ namespace Agora.Services
                     switch (edmType.TypeKind)
                     {
                         case EdmTypeKind.Complex:
+                            identifiers.Add(CreateGraphIdentifier(version, model, element));
+                            break;
                         case EdmTypeKind.Entity:
+                            identifiers.Add(CreateGraphIdentifier(version, model, element));
                             var edmStructuredType = edmType as IEdmStructuredType;
                             foreach (var property in edmStructuredType.DeclaredStructuralProperties())
                             {
                                 identifiers.Add(CreateIdentifier(version, model, property));
                             }
                             break;
-                        //case EdmTypeKind.Enum: // enum type
-                        //    return context.CreateEnumTypeSchema((IEdmEnumType)edmType);
+                        case EdmTypeKind.Enum: // enum type
+                            identifiers.Add(CreateGraphIdentifier(version, model, element));
+                            break;
 
                         //case EdmTypeKind.TypeDefinition: // type definition
                         //    return context.CreateSchemaTypeDefinitionSchema((IEdmTypeDefinition)edmType);
@@ -113,7 +117,7 @@ namespace Agora.Services
                 Version = version,
                 Name = property.Name,
                 Description = model.GetDescriptionAnnotation(property),
-                Kind = property.Type.ToString(),
+                Kind = $"Property ({property.Type.ShortQualifiedName()})",
                 Type = property.DeclaringType.ToString()
             };
         }
@@ -126,7 +130,7 @@ namespace Agora.Services
                 Name = element.Name,
                 Description = model.GetDescriptionAnnotation(element),
                 Namespace = element.Namespace,
-                Kind = element.SchemaElementKind.ToString()
+                Kind = ((IEdmType)element).TypeKind.ToString()
             };
         }
 
@@ -181,17 +185,6 @@ namespace Agora.Services
 
             return document;
         }
-    }
-
-    public class GraphIdentifier
-    {
-        public GraphVersion Version { get; set; }
-        public string Type { get; set; }
-        public string Namespace { get; set; }
-        public string Name { get; set; }
-        public string Kind { get; set; }
-        public string Description { get; set; }
-        public bool Required { get; set; }
     }
 
     public enum GraphKind

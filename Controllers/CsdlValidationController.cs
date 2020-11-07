@@ -43,7 +43,7 @@ namespace Agora
             form.Add(new StringContent("beta"),"Version");
             form.Add(new StringContent("prd"),"TargetEndpoint");
             var request = new HttpRequestMessage() {
-                RequestUri = new Uri("https://gmm.ags.msidentity.com/v1/validate"),
+                RequestUri = new Uri("https://gmm.ags.msidentity.com/v1/validate"), //https://gmmservice.azurewebsites.net/v1/validate
                 Method = HttpMethod.Post,
                 Content = form
             };

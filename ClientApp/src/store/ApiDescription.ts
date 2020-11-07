@@ -5,13 +5,15 @@ import { AppThunkAction } from '.';
 // STATE - This defines the type of data maintained in the Redux store.
 
 export interface ApiDescriptionState {
-    isLoading: boolean;
-    csdl: string;
-    umlDiagram: string;
-    openApi: string;
-    openApiUrl: string;
-    warningsReport: WarningsReport;
-    errors: CSDLError[]
+    isLoading: boolean,
+    csdl: string,
+    umlDiagram: string,
+    openApi: string,
+    openApiUrl: string,
+    warningsReport: WarningsReport,
+    errors: CSDLError[],
+    graphTerms: GraphTerm[],
+    searchTerm: string
 }
 
 // -----------------
@@ -21,6 +23,16 @@ export interface ApiDescriptionState {
 interface UpdateCsdlAction {
     type: 'UPDATE_CSDL';
     csdl: string;
+}
+
+interface UpdateSearchTermAction {
+    type: 'UPDATE_SEARCHTERM';
+    searchTerm: string;
+}
+
+interface ReceiveGraphTerms {
+    type: 'RECEIVE_GRAPHTERMS';
+    results: GraphTermSearchResults 
 }
 
 interface RequestUpdatedUmlDiagramAction {
@@ -45,7 +57,9 @@ interface ReceiveUpdatedOpenApiAction {
 
 // Declare a 'discriminated union' type. This guarantees that all references to 'type' properties contain one of the
 // declared type strings (and not any other arbitrary string).
-type KnownAction = UpdateCsdlAction | ReceiveUpdatedUmlDiagramAction | ReceiveUpdatedWarningsReportAction | RequestUpdatedUmlDiagramAction | ReceiveUpdatedOpenApiAction ;
+type KnownAction = UpdateCsdlAction | ReceiveUpdatedUmlDiagramAction | ReceiveUpdatedWarningsReportAction
+    | UpdateSearchTermAction | RequestUpdatedUmlDiagramAction | ReceiveUpdatedOpenApiAction
+    | ReceiveGraphTerms;
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -86,7 +100,20 @@ export const actionCreators = {
             dispatch({ type: 'REQUEST_UPDATED_UML' });
         }
     },
-    updateCsdl: (newValue:string) => ({ type: 'UPDATE_CSDL', csdl: newValue } as UpdateCsdlAction)
+    updateCsdl: (newValue: string) => ({ type: 'UPDATE_CSDL', csdl: newValue } as UpdateCsdlAction),
+    updateSearchTerm: (newValue: string) => ({ type: 'UPDATE_SEARCHTERM', searchTerm: newValue } as UpdateSearchTermAction),
+    searchForTerm: (): AppThunkAction<KnownAction> => (dispatch, getState) => {
+        const appState = getState();
+
+        if (appState && appState.apiDescription && appState.apiDescription.csdl) {
+
+            fetch(`graphIdentifiers?name=` + appState.apiDescription.searchTerm, { method: "GET" })
+                .then(response => response.json())
+                .then(data => {
+                    dispatch({ type: 'RECEIVE_GRAPHTERMS', results: data });
+                });
+        }
+    }
 };
 
 
@@ -103,7 +130,10 @@ const unloadedState: ApiDescriptionState = {
     openApiUrl: "", 
     warningsReport: {} as WarningsReport, 
     errors: [] as CSDLError[],
-    isLoading: false};
+    isLoading: false,
+    graphTerms: [] as GraphTerm[],
+    searchTerm: ""
+};
 
 
 export const reducer: Reducer<ApiDescriptionState> = (state: ApiDescriptionState | undefined, incomingAction: Action): ApiDescriptionState => {
@@ -116,44 +146,45 @@ export const reducer: Reducer<ApiDescriptionState> = (state: ApiDescriptionState
     switch (action.type) {
         case 'UPDATE_CSDL':
             return {
+                ...state,
                 csdl: action.csdl,
                 umlDiagram: "",
                 openApi: "",
                 openApiUrl: "",
                 warningsReport: {} as WarningsReport,
-                errors: state.errors,
                 isLoading: true
             };
         case 'RECEIVE_UPDATED_UML':
             return {
-                csdl: state.csdl,
+                ...state,
                 umlDiagram: action.umlDiagram,
-                openApi: state.openApi,                
-                openApiUrl: state.openApiUrl,                
-                warningsReport: state.warningsReport,
-                errors: state.errors,
-                isLoading: false
+                isLoading: false,
             };
         case 'RECEIVE_UPDATED_WARNINGS_REPORT':
             return {
-                csdl: state.csdl,
-                umlDiagram: state.umlDiagram,
-                openApi: state.openApi,                
-                openApiUrl: state.openApiUrl,                
+                ...state,
                 warningsReport: action.warningsReport,
                 errors: action.warningsReport.Result[1].Details[0].Details,
-                isLoading: false
+                isLoading: false,
             };
         case 'RECEIVE_UPDATED_OPENAPI':
                 return {
-                    csdl: state.csdl,
-                    umlDiagram: state.umlDiagram,
+                    ...state,
                     openApi: action.openApi,                
                     openApiUrl: action.openApiUrl,                
-                    warningsReport: state.warningsReport,
-                    errors: state.errors,
-                    isLoading: false
-                };
+                    isLoading: false,
+            };
+        case 'UPDATE_SEARCHTERM':
+            return {
+                ...state,
+                searchTerm: action.searchTerm,
+                graphTerms: []
+            };
+        case 'RECEIVE_GRAPHTERMS':
+            return {
+                ...state,
+                graphTerms: action.results.matches
+            };
     }
 
     return state;
@@ -169,6 +200,20 @@ export interface CSDLError {
     Target: CSDLErrorTarget,
     Details: CSDLError[],
     InnerError: CSDLError
+}
+
+export interface GraphTermSearchResults {
+    matches: GraphTerm[]
+}
+
+export interface GraphTerm {
+    version: string,
+    type: string,
+    namespace: string,
+    name: string,
+    kind: string
+    description: string,
+    required: boolean
 }
 
 export interface CSDLErrorTarget {
