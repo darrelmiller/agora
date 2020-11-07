@@ -15,7 +15,7 @@ namespace Agora
         }
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            if (request.RequestUri.Host == "gmm.ags.msidentity.com")
+            if (request.RequestUri.Host == "gmmservice.azurewebsites.net")
             {
                 var authRequest = application.AcquireTokenForClient(new string[] { "25d1b53f-d05d-4aef-a9e2-c8f83208ffa2/.default" });
                 var authResult = await authRequest.ExecuteAsync();
