@@ -1,0 +1,26 @@
+{
+	"root": {
+		"id": -1,
+		"parentId": null,
+		"children": [
+			{
+				"id": 1,
+				"parentId": -1,
+				"name": "Category 1",
+				"categoryCode": "as-ffw-34neh-",
+				"editable": true,
+				"children": [
+					{
+						"id": 12,
+						"parentId": 1,
+						"leaf": false 
+					},
+					{
+						"id": 13,
+						"parentId": 1
+					}
+				]
+			}
+		]
+	}
+}

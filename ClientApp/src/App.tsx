@@ -10,6 +10,7 @@ import SwaggerUIView from './components/SwaggerUIView';
 import GraphVocabularies from './components/GraphVocabularies';
 import * as ApiDescriptionStore from './store/ApiDescription';
 import { useDispatch } from 'react-redux';
+import UriSpace from './components/UriSpace';
 
 
 export default () => {
@@ -30,6 +31,7 @@ export default () => {
             <Route path='/umldiagram' component={UmlDiagram} />
             <Route path='/openapi' component={OpenApiDescription} />
             <Route path='/swaggerui' component={SwaggerUIView} />
+            <Route path='/urispace' component={UriSpace} />
             <Route path='/vocabulary' component={GraphVocabularies} />
         </Layout>
     )
