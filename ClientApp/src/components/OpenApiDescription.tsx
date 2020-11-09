@@ -2,27 +2,22 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 import { ApplicationState } from '../store';
-import * as ApiDescriptionStore from '../store/ApiDescription';
+import { actionCreators } from '../store/Actions';
+import { OpenApiState } from '../store/OpenApiState';
 
+type OpenApiProps = OpenApiState & typeof actionCreators ;
 
-type ApiDescriptionProps =
-    ApiDescriptionStore.ApiDescriptionState
-    & typeof ApiDescriptionStore.actionCreators ;
-    //&
-    //RouteComponentProps<{}>;
-
-const OpenApiDescription = (props: ApiDescriptionProps)  => {
+const OpenApiDescription = (props: OpenApiProps)  => {
 
     return (<div id="openApiDescription">
               <textarea id="openApiEditor" className="Editor" name="csdl" 
-                                          value={props.openApi.OpenApi}
+                                          value={props.OpenApi}
                                           readOnly 
                                           />
             </div>
             );
   };
 
-  const mapStateToProps = (state : ApplicationState)  => state.apiDescription;
+  const mapStateToProps = (state : ApplicationState)  => state.openApi;
 
-  export default connect(mapStateToProps,
-    ApiDescriptionStore.actionCreators)(OpenApiDescription as any)
+  export default connect(mapStateToProps, actionCreators)(OpenApiDescription as any)

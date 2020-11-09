@@ -2,16 +2,13 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 import { ApplicationState } from '../store';
-import * as ApiDescriptionStore from '../store/ApiDescription';
-import { CSDLError } from '../store/ApiDescription';
+import * as AgoraStore from '../store/ApiDescription';
+import { actionCreators } from '../store/Actions';
 
-// interface ApiDescriptionProps {
-//     csdl: string | undefined
-// }
 
 type ApiDescriptionProps =
-    ApiDescriptionStore.ApiDescriptionState
-    & typeof ApiDescriptionStore.actionCreators ;
+    AgoraStore.ApiDescriptionState
+    & typeof actionCreators ;
     //&
     //RouteComponentProps<{}>;
 
@@ -35,7 +32,7 @@ const ApiDescription = (props: ApiDescriptionProps)  => {
                 </tr>
               </thead>
               <tbody>
-                {props.errors.map((error: CSDLError) =>
+                {props.errors.map((error: AgoraStore.CSDLError) =>
                   <tr>
                     <td>{error.Code}</td>
                     <td>{error.Message}</td>
@@ -51,5 +48,4 @@ const ApiDescription = (props: ApiDescriptionProps)  => {
 
   const mapStateToProps = (state : ApplicationState)  => state.apiDescription;
 
-  export default connect(mapStateToProps,
-    ApiDescriptionStore.actionCreators)(ApiDescription as any)
+  export default connect(mapStateToProps, actionCreators)(ApiDescription as any)

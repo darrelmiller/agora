@@ -1,15 +1,24 @@
 import * as ApiDescription from './ApiDescription';
+import { vocabulary, VocabularyState } from './VocabularyState';
+import { OpenApiState, openApi } from './OpenApiState';
+import { umlDiagram } from './UmlDiagramState';
 
 // The top-level state object
 export interface ApplicationState {
-    apiDescription: ApiDescription.ApiDescriptionState  | undefined;
+    apiDescription: ApiDescription.ApiDescriptionState,
+    umlDiagram: string,
+    openApi: OpenApiState,
+    vocabulary: VocabularyState,
 }
 
 // Whenever an action is dispatched, Redux will update each top-level application state property using
 // the reducer with the matching name. It's important that the names match exactly, and that the reducer
 // acts on the corresponding ApplicationState property type.
 export const reducers = {
-    apiDescription: ApiDescription.reducer
+    apiDescription: ApiDescription.reducer,
+    umlDiagram: umlDiagram,
+    openApi: openApi,
+    vocabulary: vocabulary
 };
 
 

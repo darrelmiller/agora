@@ -2,22 +2,18 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 import { ApplicationState } from '../store';
-import * as ApiDescriptionStore from '../store/ApiDescription';
 import SwaggerUI from "swagger-ui-react"
 import "swagger-ui-react/swagger-ui.css"
+import { actionCreators } from '../store/Actions';
+import { OpenApiState } from '../store/OpenApiState';
 
-type ApiDescriptionProps =
-    ApiDescriptionStore.ApiDescriptionState
-    & typeof ApiDescriptionStore.actionCreators ;
-    //&
-    //RouteComponentProps<{}>;
+type OpenApiProps = OpenApiState & typeof actionCreators ;
 
-const SwaggerUIView = (props: ApiDescriptionProps)  => {
+const SwaggerUIView = (props: OpenApiProps)  => {
 
-    return (<SwaggerUI url={props.openApi.OpenApiUrl} /> );
+    return (<SwaggerUI url={props.OpenApiUrl} /> );
   };
 
-  const mapStateToProps = (state : ApplicationState)  => state.apiDescription;
+  const mapStateToProps = (state : ApplicationState)  => state.openApi;
 
-  export default connect(mapStateToProps,
-    ApiDescriptionStore.actionCreators)(SwaggerUIView as any)
+  export default connect(mapStateToProps, actionCreators)(SwaggerUIView as any)

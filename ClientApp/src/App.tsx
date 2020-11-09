@@ -8,9 +8,9 @@ import UmlDiagram from './components/UmlDiagram';
 import OpenApiDescription from './components/OpenApiDescription';
 import SwaggerUIView from './components/SwaggerUIView';
 import GraphVocabularies from './components/GraphVocabularies';
-import * as ApiDescriptionStore from './store/ApiDescription';
 import { useDispatch } from 'react-redux';
 import UriSpace from './components/UriSpace';
+import { actionCreators } from './store/Actions';
 
 
 export default () => {
@@ -21,8 +21,8 @@ export default () => {
 
     if (search) {
         const dispatch = useDispatch();
-        dispatch(ApiDescriptionStore.actionCreators.updateSearchTerm(search));
-        dispatch(ApiDescriptionStore.actionCreators.searchForTerm());
+        dispatch(actionCreators.updateSearchTerm(search));
+        dispatch(actionCreators.searchForTerm());
     }
 
     return (

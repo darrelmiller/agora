@@ -2,19 +2,11 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
 import { ApplicationState } from '../store';
-import * as ApiDescriptionStore from '../store/ApiDescription';
+import { actionCreators } from '../store/Actions';
 
-// interface ApiDescriptionProps {
-//     csdl: string | undefined
-// }
+type UmlDiagramProps = { umlDiagram: string } & typeof actionCreators ;
 
-type ApiDescriptionProps =
-    ApiDescriptionStore.ApiDescriptionState
-    & typeof ApiDescriptionStore.actionCreators ;
-    //&
-    //RouteComponentProps<{}>;
-
-const ApiDescription = (props: ApiDescriptionProps)  => {
+const ApiDescription = (props: UmlDiagramProps)  => {
 
     return (<div>
               <img src={props.umlDiagram} />  
@@ -24,5 +16,4 @@ const ApiDescription = (props: ApiDescriptionProps)  => {
 
   const mapStateToProps = (state : ApplicationState)  => state.apiDescription;
 
-  export default connect(mapStateToProps,
-    ApiDescriptionStore.actionCreators)(ApiDescription as any)
+  export default connect(mapStateToProps, actionCreators)(ApiDescription as any)

@@ -1,0 +1,1 @@
+{"version":3,"file":"UmlDiagramState.js","sourceRoot":"","sources":["UmlDiagramState.ts"],"names":[],"mappings":";;;AAEA,SAAgB,UAAU,CAAC,KAAkB,EAAE,MAAiB;IAArC,sBAAA,EAAA,UAAkB;IAEzC,QAAQ,MAAM,CAAC,IAAI,EAAE;QACjB,KAAK,aAAa;YACd,OAAO,EAAE,CAAC;QACd,KAAK,qBAAqB;YACtB,OAAO,MAAM,CAAC,UAAU,CAAC;QAC7B;YACI,OAAO,KAAK,CAAC;KACpB;AACL,CAAC;AAVD,gCAUC"}
