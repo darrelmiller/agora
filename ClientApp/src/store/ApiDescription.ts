@@ -5,15 +5,11 @@ import { AppThunkAction } from '.';
 // STATE - This defines the type of data maintained in the Redux store.
 
 export interface ApiDescriptionState {
-    isLoading: boolean,
     csdl: string,
-    umlDiagram: string,
-    openApi: string,
-    openApiUrl: string,
-    warningsReport: WarningsReport,
     errors: CSDLError[],
-    graphTerms: GraphTerm[],
-    searchTerm: string
+    umlDiagram: string,
+    openApi: OpenApiState
+    vocabulary: VocabularyState
 }
 
 // -----------------
@@ -107,7 +103,7 @@ export const actionCreators = {
 
         if (appState && appState.apiDescription && appState.apiDescription.csdl) {
 
-            fetch(`graphIdentifiers?name=` + appState.apiDescription.searchTerm, { method: "GET" })
+            fetch(`graphIdentifiers?name=` + appState.apiDescription.vocabulary.searchTerm, { method: "GET" })
                 .then(response => response.json())
                 .then(data => {
                     dispatch({ type: 'RECEIVE_GRAPHTERMS', results: data });
@@ -120,75 +116,30 @@ export const actionCreators = {
 // ----------------
 // REDUCER - For a given state and action, returns the new state. To support time travel, this must not mutate the old state.
 
-const unloadedState: ApiDescriptionState = { 
-    csdl: `<edmx:Edmx xmlns:edmx='http://docs.oasis-open.org/odata/ns/edmx' Version='4.0'>
-    <edmx:DataServices>
-    </edmx:DataServices>
-</edmx:Edmx>`, 
-    umlDiagram: "", 
-    openApi: "",
-    openApiUrl: "", 
-    warningsReport: {} as WarningsReport, 
-    errors: [] as CSDLError[],
-    isLoading: false,
-    graphTerms: [] as GraphTerm[],
-    searchTerm: ""
-};
 
-
-export const reducer: Reducer<ApiDescriptionState> = (state: ApiDescriptionState | undefined, incomingAction: Action): ApiDescriptionState => {
-    if (state === undefined) {
-        console.log("initializing state " + unloadedState.csdl)
-        return unloadedState;
-    }
+export const reducer: Reducer<ApiDescriptionState> = (state: ApiDescriptionState = {} as ApiDescriptionState, incomingAction: Action): ApiDescriptionState => {
 
     const action = incomingAction as KnownAction;
-    switch (action.type) {
-        case 'UPDATE_CSDL':
-            return {
-                ...state,
-                csdl: action.csdl,
-                umlDiagram: "",
-                openApi: "",
-                openApiUrl: "",
-                warningsReport: {} as WarningsReport,
-                isLoading: true
-            };
-        case 'RECEIVE_UPDATED_UML':
-            return {
-                ...state,
-                umlDiagram: action.umlDiagram,
-                isLoading: false,
-            };
-        case 'RECEIVE_UPDATED_WARNINGS_REPORT':
-            return {
-                ...state,
-                warningsReport: action.warningsReport,
-                errors: action.warningsReport.Result[1].Details[0].Details,
-                isLoading: false,
-            };
-        case 'RECEIVE_UPDATED_OPENAPI':
-                return {
-                    ...state,
-                    openApi: action.openApi,                
-                    openApiUrl: action.openApiUrl,                
-                    isLoading: false,
-            };
-        case 'UPDATE_SEARCHTERM':
-            return {
-                ...state,
-                searchTerm: action.searchTerm,
-                graphTerms: []
-            };
-        case 'RECEIVE_GRAPHTERMS':
-            return {
-                ...state,
-                graphTerms: action.results.matches
-            };
-    }
 
-    return state;
+    return {
+        csdl: csdl(state.csdl, action),
+        umlDiagram: umlDiagram(state.umlDiagram, action),
+        errors: errors(state.errors, action),
+        openApi: openApi(state.openApi, action),
+        vocabulary: vocabulary(state.vocabulary,action)
+    };
+   
 };
+
+export interface OpenApiState {
+    OpenApi: string,
+    OpenApiUrl: string
+}
+
+export interface VocabularyState {
+    searchTerm: string,
+    graphTerms: GraphTerm[]
+}
 
 export interface WarningsReport {
     Result: CSDLError[]
@@ -218,4 +169,76 @@ export interface GraphTerm {
 
 export interface CSDLErrorTarget {
     Name: string
+}
+
+const defaultCsdl: string = `<edmx:Edmx xmlns:edmx='http://docs.oasis-open.org/odata/ns/edmx' Version='4.0'>
+    <edmx:DataServices>
+    </edmx:DataServices>
+</edmx:Edmx>`;
+
+function csdl(state: string = defaultCsdl, incomingAction: any): string {
+    const action = incomingAction as KnownAction;
+    switch (action.type) {
+        case 'UPDATE_CSDL':
+            return action.csdl;
+        default:
+            return state;
+    }
+}
+
+function umlDiagram(state: string = "", incomingAction: any): string {
+    const action = incomingAction as KnownAction;
+    switch (action.type) {
+        case 'UPDATE_CSDL':
+            return "";
+        case 'RECEIVE_UPDATED_UML':
+            return action.umlDiagram;
+        default:
+            return state;
+    }
+}
+
+function errors(state: CSDLError[] = [], incomingAction: any): CSDLError[] {
+    const action = incomingAction as KnownAction;
+    switch (action.type) {
+        case 'UPDATE_CSDL':
+            return [];
+        case 'RECEIVE_UPDATED_WARNINGS_REPORT':
+            return action.warningsReport.Result[1].Details[0].Details;
+        default:
+            return state;
+    }
+}
+
+function openApi(state: OpenApiState = {} as OpenApiState, incomingAction: any): OpenApiState {
+    const action = incomingAction as KnownAction;
+    switch (action.type) {
+        case 'UPDATE_CSDL':
+            return {} as OpenApiState;
+        case 'RECEIVE_UPDATED_OPENAPI':
+            return {
+                OpenApi: action.openApi,
+                OpenApiUrl: action.openApiUrl
+            };
+        default:
+            return state;
+    }
+}
+
+function vocabulary(state: VocabularyState = {graphTerms: [], searchTerm: "" } as VocabularyState, incomingAction: any): VocabularyState {
+    const action = incomingAction as KnownAction;
+    switch (action.type) {
+        case 'UPDATE_SEARCHTERM':
+            return {
+                searchTerm: action.searchTerm,
+                graphTerms: [] as GraphTerm[] 
+            } ;
+        case 'RECEIVE_GRAPHTERMS':
+            return {
+                searchTerm: state.searchTerm,
+                graphTerms: action.results.matches
+            };
+        default:
+            return state;
+    }
 }

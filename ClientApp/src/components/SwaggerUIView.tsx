@@ -14,7 +14,7 @@ type ApiDescriptionProps =
 
 const SwaggerUIView = (props: ApiDescriptionProps)  => {
 
-    return (<SwaggerUI url={props.openApiUrl} /> );
+    return (<SwaggerUI url={props.openApi.OpenApiUrl} /> );
   };
 
   const mapStateToProps = (state : ApplicationState)  => state.apiDescription;

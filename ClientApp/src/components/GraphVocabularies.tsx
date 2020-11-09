@@ -17,7 +17,7 @@ const GraphVocabularies = (props: GraphVocabulariesProps)  => {
     return (<div id="graphVocabularySearch">
 
               <input type="search" id="searchField" className="Editor" name="csdl" 
-                                          value={props.searchTerm} 
+                                          value={props.vocabulary.searchTerm} 
                                           onChange={(event) =>{props.updateSearchTerm(event.target.value)}}
                                           />
               <button id="searchButton" onClick={(event) =>{props.searchForTerm();}}>Search</button>
@@ -33,7 +33,7 @@ const GraphVocabularies = (props: GraphVocabulariesProps)  => {
                 </tr>
               </thead>
               <tbody>
-                {props.graphTerms.map((term: GraphTerm) =>
+                {props.vocabulary.graphTerms.map((term: GraphTerm) =>
                   <tr>
                     <td>{term.version}</td>
                     <td>{term.name}</td>
