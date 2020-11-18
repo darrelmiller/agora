@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { RouteComponentProps, useParams } from 'react-router-dom';
 import { ApplicationState } from '../store';
 import * as ApiDescriptionStore from '../store/ApiDescription';
-import { Grid } from 'react-redux-grid';
+//import { Grid } from 'react-redux-grid';
 import { actionCreators } from '../store/Actions';
 
 type UriSpaceProps =
@@ -63,11 +63,11 @@ const treeConfig = {
 const UriSpace = (props: UriSpaceProps)  => {
 
     return (<div id="uriSpace">
-        <Grid {...treeConfig} />
-
+ 
             </div>
             );
   };
+//       <Grid {...treeConfig} />
 
   const mapStateToProps = (state : ApplicationState)  => state.apiDescription;
 

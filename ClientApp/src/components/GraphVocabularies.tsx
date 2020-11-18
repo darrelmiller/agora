@@ -31,7 +31,7 @@ const GraphVocabularies = (props: GraphVocabulariesProps)  => {
                 {props.graphTerms.map((term: GraphTerm) =>
                   <tr>
                     <td>{term.version}</td>
-                    <td>{term.name}</td>
+                        <td><a target='_blank' href={'https://metadataexplorerstorage.blob.core.windows.net/$web/beta.html#search:'+term.name}> {term.name}</a></td>
                     <td>{term.kind}</td>
                      <td>{term.type}</td>
                     <td>{term.description}</td>

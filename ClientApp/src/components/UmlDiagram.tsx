@@ -6,7 +6,7 @@ import { actionCreators } from '../store/Actions';
 
 type UmlDiagramProps = { umlDiagram: string } & typeof actionCreators ;
 
-const ApiDescription = (props: UmlDiagramProps)  => {
+const umlDiagram = (props: UmlDiagramProps)  => {
 
     return (<div>
               <img src={props.umlDiagram} />  
@@ -14,6 +14,6 @@ const ApiDescription = (props: UmlDiagramProps)  => {
             );
   };
 
-  const mapStateToProps = (state : ApplicationState)  => state.apiDescription;
+const mapStateToProps = (state: ApplicationState) => state ;
 
-  export default connect(mapStateToProps, actionCreators)(ApiDescription as any)
+export default connect(mapStateToProps, actionCreators)(umlDiagram as any)

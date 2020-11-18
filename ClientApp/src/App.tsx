@@ -31,8 +31,9 @@ export default () => {
             <Route path='/umldiagram' component={UmlDiagram} />
             <Route path='/openapi' component={OpenApiDescription} />
             <Route path='/swaggerui' component={SwaggerUIView} />
-            <Route path='/urispace' component={UriSpace} />
             <Route path='/vocabulary' component={GraphVocabularies} />
         </Layout>
     )
 };
+
+// <!--        <Route path='/urispace' component={UriSpace} /> -->
