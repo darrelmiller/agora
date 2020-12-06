@@ -33,6 +33,7 @@
     <None Remove="ClientApp\src\store\Actions.ts" />
     <None Remove="ClientApp\src\store\OpenApiState.ts" />
     <None Remove="ClientApp\src\store\UmlDiagramState.ts" />
+    <None Remove="ClientApp\src\store\UriSpaceState.ts" />
     <None Remove="ClientApp\src\store\VocabularyState.ts" />
   </ItemGroup>
   <ItemGroup>
@@ -40,6 +41,9 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\store\Actions.ts" />
+    <TypeScriptCompile Include="ClientApp\src\store\UriSpaceState.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="ClientApp\src\store\UmlDiagramState.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>

@@ -9,8 +9,9 @@ import OpenApiDescription from './components/OpenApiDescription';
 import SwaggerUIView from './components/SwaggerUIView';
 import GraphVocabularies from './components/GraphVocabularies';
 import { useDispatch } from 'react-redux';
-import UriSpace from './components/UriSpace';
+import UriSpace from './components/UriSpaceView';
 import { actionCreators } from './store/Actions';
+import UriSpaceView from './components/UriSpaceView';
 
 
 export default () => {
@@ -31,6 +32,7 @@ export default () => {
             <Route path='/umldiagram' component={UmlDiagram} />
             <Route path='/openapi' component={OpenApiDescription} />
             <Route path='/swaggerui' component={SwaggerUIView} />
+            <Route path='/urispaceview' component={UriSpaceView} />
             <Route path='/vocabulary' component={GraphVocabularies} />
         </Layout>
     )

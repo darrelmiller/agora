@@ -82,6 +82,15 @@ exports.actionCreators = {
                     openApiUrl: data.openApiUrl
                 });
             });
+            // Fetch Urispace
+            fetch("urispacedata", { method: "POST", body: appState.apiDescription.csdl })
+                .then(function (response) { return response.json(); })
+                .then(function (data) {
+                dispatch({
+                    type: 'RECEIVE_URISPACE',
+                    uriSpace: data
+                });
+            });
             dispatch({ type: 'REQUEST_UPDATED_UML' });
         }
     }; },

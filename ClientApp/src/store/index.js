@@ -5,6 +5,7 @@ var ApiDescription = require("./ApiDescription");
 var VocabularyState_1 = require("./VocabularyState");
 var OpenApiState_1 = require("./OpenApiState");
 var UmlDiagramState_1 = require("./UmlDiagramState");
+var UriSpaceState_1 = require("./UriSpaceState");
 // Whenever an action is dispatched, Redux will update each top-level application state property using
 // the reducer with the matching name. It's important that the names match exactly, and that the reducer
 // acts on the corresponding ApplicationState property type.
@@ -12,6 +13,7 @@ exports.reducers = {
     apiDescription: ApiDescription.reducer,
     umlDiagram: UmlDiagramState_1.umlDiagram,
     openApi: OpenApiState_1.openApi,
-    vocabulary: VocabularyState_1.vocabulary
+    vocabulary: VocabularyState_1.vocabulary,
+    uriSpace: UriSpaceState_1.uriSpace
 };
 //# sourceMappingURL=index.js.map

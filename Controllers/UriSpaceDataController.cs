@@ -17,6 +17,8 @@ using Microsoft.OpenApi.OData;
 using Microsoft.OData.Edm.Vocabularies;
 using Agora.Services;
 using Microsoft.Net.Http.Headers;
+using Microsoft.OpenApi.Readers;
+using System.Collections.Immutable;
 
 namespace Agora
 {
@@ -27,25 +29,70 @@ namespace Agora
 
         private readonly ILogger<UmlDiagramController> _logger;
         private readonly VocabService vocabService;
+        private readonly IHttpClientFactory clientFactory;
 
-        public UriSpaceDataController(ILogger<UmlDiagramController> logger, VocabService vocabService)
+        public UriSpaceDataController(ILogger<UmlDiagramController> logger, VocabService vocabService, IHttpClientFactory clientFactory)
         {
             _logger = logger;
             this.vocabService = vocabService;
+            this.clientFactory = clientFactory;
         }
 
 
-        [HttpGet]
-        public IActionResult Get(string name)
+        [HttpPost]
+        public async Task Post()
         {
-            // Get OpenAPI.
-            // Walk the PathItems.
-            // Walk the path Segments
-            // Add to a tree.  
-            // Return the tree
-            var assembly = this.GetType().Assembly;
-            Stream resource = assembly.GetManifestResourceStream("Agora.Controllers.UriSpaceSample.json");
-            return new FileStreamResult(resource, new MediaTypeHeaderValue("application/json"));
+            var csdl = await new StreamReader(Request.Body).ReadToEndAsync();
+
+            var openApiService = new OpenApiService(clientFactory);
+            
+            var v1Doc = await openApiService.GetOpenApiDocumentAsync("v1.0");
+            var urlspace = OpenApiUrlSpaceNode.Create(v1Doc,"v1");
+
+            var betaDoc = await openApiService.GetOpenApiDocumentAsync("beta");
+            urlspace.Attach(betaDoc, "beta");
+
+            // Get OpenAPI for current CSDL.
+            try
+            {
+                var currentReview = await openApiService.ConvertCsdlUntilOpenApiDocumentAsync(csdl);
+                urlspace.Attach(currentReview, "current");
+            }
+            catch
+            {
+                // Show the tree anyway
+            }
+
+            //Response.ContentType = "application/json";
+            //Response.StatusCode = 200;
+            RenderJSON(urlspace, Response.Body);
+        }
+
+
+        private static void RenderJSON(OpenApiUrlSpaceNode urlspace, Stream outfile)
+        {
+            var writer = new Utf8JsonWriter(outfile);
+            RenderJSON(writer, urlspace);
+            writer.FlushAsync();
+            
+        }
+
+        static void RenderJSON(Utf8JsonWriter writer, OpenApiUrlSpaceNode node)
+        {
+            writer.WriteStartObject();
+            writer.WriteString("segment", node.Segment);
+            writer.WriteString("layer", node.Layer);
+
+            if (node.Children.Count() > 0)
+            {
+                writer.WriteStartArray("children");
+                foreach (var child in node.Children.ToImmutableSortedDictionary().Values)
+                {
+                    RenderJSON(writer, child);
+                }
+                writer.WriteEndArray();
+            }
+            writer.WriteEndObject();
         }
 
 

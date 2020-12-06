@@ -32,6 +32,7 @@ namespace Agora
                                 
             services.AddSingleton<ResourceStore>();
             services.AddSingleton<VocabService>();
+            services.AddSingleton<OpenApiService>();
 
             services.AddHttpClient("default", (client) => {
                 

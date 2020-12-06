@@ -30,19 +30,26 @@ namespace Agora
             var csdl = await new StreamReader(Request.Body).ReadToEndAsync();
 
             var generator = new PlantConverter();
-            var plant = generator.EmitPlantDiagram(csdl, filename);
+            try
+            {
+                var plant = generator.EmitPlantDiagram(csdl, filename);
 
-            var factory = new RendererFactory();
+                var factory = new RendererFactory();
 
-            var renderer = factory.CreateRenderer(new PlantUmlSettings() );
+                var renderer = factory.CreateRenderer(new PlantUmlSettings());
 
-            var bytes = await renderer.RenderAsync(plant, OutputFormat.Svg);
+                var bytes = await renderer.RenderAsync(plant, OutputFormat.Svg);
 
-            var idx = Guid.NewGuid().ToString();
-            _resourceStore.SetItem(idx, bytes);
+                var idx = Guid.NewGuid().ToString();
+                _resourceStore.SetItem(idx, bytes);
 
-            var url = this.Url.Action("Get","UmlDiagram", new {id = idx });
-            return Created(url, null);
+                var url = this.Url.Action("Get", "UmlDiagram", new { id = idx });
+                return Created(url, null);
+            } 
+            catch(Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
     }
 }

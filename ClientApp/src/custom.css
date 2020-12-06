@@ -51,3 +51,30 @@ body {
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
+
+.v1 {
+    color: blue;
+}
+.beta {
+    color: orangered;
+}
+
+.current {
+    color: forestgreen;
+}
+
+.collapsibleList li > input + * {
+    display: none;
+}
+
+.collapsibleList li > input:checked + * {
+    display: block;
+}
+
+.collapsibleList li > input {
+    display: none;
+}
+
+.collapsibleList label {
+    cursor: pointer;
+}

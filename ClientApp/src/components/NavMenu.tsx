@@ -30,7 +30,7 @@ export default class NavMenu extends React.PureComponent<{}, { isOpen: boolean }
                                     <NavLink tag={Link} className="text-dark" to="/swaggerui">Swagger UI</NavLink>
                                 </NavItem>
                                 <NavItem>
-                                    <NavLink tag={Link} className="text-dark" to="/urispace">URI Space</NavLink>
+                                    <NavLink tag={Link} className="text-dark" to="/urispaceview">URI Space</NavLink>
                                 </NavItem>
                                 <NavItem>
                                     <NavLink tag={Link} className="text-dark" to="/vocabulary">Vocabulary</NavLink>

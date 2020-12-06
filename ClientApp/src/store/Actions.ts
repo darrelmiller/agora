@@ -1,6 +1,7 @@
 ﻿import { AppThunkAction } from '.';
 import { GraphTermSearchResults } from './VocabularyState';
 import { WarningsReport } from './ApiDescription';
+import { UriSpaceNode } from './UriSpaceState';
 
 // -----------------
 // ACTIONS - These are serializable (hence replayable) descriptions of state transitions.
@@ -41,6 +42,11 @@ interface ReceiveUpdatedOpenApiAction {
     openApiUrl: string;
 }
 
+interface ReceiveUriSpace {
+    type: 'RECEIVE_URISPACE';
+    uriSpace: UriSpaceNode
+}
+
 // Declare a 'discriminated union' type. This guarantees that all references to 'type' properties contain one of the
 // declared type strings (and not any other arbitrary string).
 type KnownAction = UpdateCsdlAction
@@ -49,7 +55,8 @@ type KnownAction = UpdateCsdlAction
     | UpdateSearchTermAction
     | RequestUpdatedUmlDiagramAction
     | ReceiveUpdatedOpenApiAction
-    | ReceiveGraphTerms;
+    | ReceiveGraphTerms
+    | ReceiveUriSpace;
 
 // ----------------
 // ACTION CREATORS - These are functions exposed to UI components that will trigger a state transition.
@@ -92,8 +99,18 @@ export const actionCreators = {
                         openApi: data.openApi,
                         openApiUrl: data.openApiUrl
                     });
-
                 });
+
+            // Fetch Urispace
+            fetch(`urispacedata`, { method: "POST", body: appState.apiDescription.csdl })
+                .then(response => response.json())
+                .then(data => {
+                    dispatch({
+                        type: 'RECEIVE_URISPACE',
+                        uriSpace: data
+                    });
+                });
+
 
             dispatch({ type: 'REQUEST_UPDATED_UML' });
         }

@@ -12,6 +12,7 @@ using System.Xml.Linq;
 using Microsoft.OpenApi.Writers;
 using System.Net.Http;
 using System.Text;
+using Agora.Services;
 
 namespace Agora
 {
@@ -23,12 +24,14 @@ namespace Agora
         private readonly ILogger<CsdlImageController> _logger;
         private readonly ResourceStore _resourceStore;
         private readonly HttpClient _client;
+        private OpenApiService _openApiService;
 
         public OpenApiController(ILogger<CsdlImageController> logger, ResourceStore resourceStore, IHttpClientFactory clientFactory)
         {
             _logger = logger;
             _resourceStore = resourceStore;
             _client = clientFactory.CreateClient("default");
+            _openApiService = new OpenApiService(clientFactory);
         }
 
         

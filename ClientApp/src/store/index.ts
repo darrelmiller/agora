@@ -2,6 +2,7 @@ import * as ApiDescription from './ApiDescription';
 import { vocabulary, VocabularyState } from './VocabularyState';
 import { OpenApiState, openApi } from './OpenApiState';
 import { umlDiagram } from './UmlDiagramState';
+import { uriSpace, UriSpaceNode } from './UriSpaceState';
 
 // The top-level state object
 export interface ApplicationState {
@@ -9,6 +10,7 @@ export interface ApplicationState {
     umlDiagram: string,
     openApi: OpenApiState,
     vocabulary: VocabularyState,
+    uriSpace: UriSpaceNode
 }
 
 // Whenever an action is dispatched, Redux will update each top-level application state property using
@@ -18,7 +20,8 @@ export const reducers = {
     apiDescription: ApiDescription.reducer,
     umlDiagram: umlDiagram,
     openApi: openApi,
-    vocabulary: vocabulary
+    vocabulary: vocabulary,
+    uriSpace: uriSpace
 };
 
 
