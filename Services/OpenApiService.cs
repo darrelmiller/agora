@@ -29,8 +29,13 @@ namespace Agora.Services
             return doc;
         }
 
+        private Dictionary<string, OpenApiDocument> _TemporaryCache = new Dictionary<string, OpenApiDocument>();
         public async Task<OpenApiDocument> GetOpenApiDocumentAsync(string version)
         {
+            if (_TemporaryCache.ContainsKey(version))
+            {
+                return _TemporaryCache[version];
+            }
             var devXClient = new DevXClient(_client);
 
             var doc = await devXClient.OpenApi.ToRequest(p => { 
@@ -38,6 +43,7 @@ namespace Agora.Services
                 p.OperationIds = "*"; 
             }).GetAsync();
 
+            _TemporaryCache[version] = doc;
             return doc;
         }
     }

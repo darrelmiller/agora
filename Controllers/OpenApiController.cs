@@ -26,12 +26,12 @@ namespace Agora
         private readonly HttpClient _client;
         private OpenApiService _openApiService;
 
-        public OpenApiController(ILogger<CsdlImageController> logger, ResourceStore resourceStore, IHttpClientFactory clientFactory)
+        public OpenApiController(ILogger<CsdlImageController> logger, ResourceStore resourceStore, IHttpClientFactory clientFactory, OpenApiService openApiService)
         {
             _logger = logger;
             _resourceStore = resourceStore;
             _client = clientFactory.CreateClient("default");
-            _openApiService = new OpenApiService(clientFactory);
+            _openApiService = openApiService;
         }
 
         
