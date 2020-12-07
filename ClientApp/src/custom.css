@@ -69,6 +69,7 @@ body {
 
 .collapsibleList li > input:checked + * {
     display: block;
+    margin: 2px;
 }
 
 .collapsibleList li > input {

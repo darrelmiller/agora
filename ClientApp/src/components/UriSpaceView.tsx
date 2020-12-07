@@ -24,7 +24,7 @@ const UriSpaceView = (props: UriSpaceProps)  => {
     }
 
     return (<div id="uriSpace">
-        <ul >
+        <ul>
                     {renderChild(props.uriSpace)}         
                 </ul>
             </div>
