@@ -61,7 +61,7 @@ function errors(state: CSDLError[] = [], action: AnyAction): CSDLError[] {
         case 'UPDATE_CSDL':
             return [];
         case 'RECEIVE_UPDATED_WARNINGS_REPORT':
-            return action.warningsReport.Result[1]?.Details[0]?.Details;
+            return action.warningsReport.Result[1].Details[0].Details;
         default:
             return state;
     }

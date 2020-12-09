@@ -78,4 +78,5 @@ body {
 
 .collapsibleList label {
     cursor: pointer;
+    line-height: 0.2;
 }

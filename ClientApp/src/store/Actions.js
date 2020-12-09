@@ -105,6 +105,20 @@ exports.actionCreators = {
                 dispatch({ type: 'RECEIVE_GRAPHTERMS', results: data });
             });
         }
+    }; },
+    updateUriSpace: function () { return function (dispatch, getState) {
+        var appState = getState();
+        if (appState && appState.apiDescription && appState.apiDescription.csdl) {
+            // Fetch Urispace
+            fetch("urispacedata", { method: "POST", body: appState.apiDescription.csdl })
+                .then(function (response) { return response.json(); })
+                .then(function (data) {
+                dispatch({
+                    type: 'RECEIVE_URISPACE',
+                    uriSpace: data
+                });
+            });
+        }
     }; }
 };
 //# sourceMappingURL=Actions.js.map

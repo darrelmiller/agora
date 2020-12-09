@@ -21,13 +21,12 @@ function csdl(state, action) {
     }
 }
 function errors(state, action) {
-    var _a, _b;
     if (state === void 0) { state = []; }
     switch (action.type) {
         case 'UPDATE_CSDL':
             return [];
         case 'RECEIVE_UPDATED_WARNINGS_REPORT':
-            return (_b = (_a = action.warningsReport.Result[1]) === null || _a === void 0 ? void 0 : _a.Details[0]) === null || _b === void 0 ? void 0 : _b.Details;
+            return action.warningsReport.Result[1].Details[0].Details;
         default:
             return state;
     }

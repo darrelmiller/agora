@@ -14,7 +14,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Tavis.HttpCache;
 
 namespace Agora
 {
@@ -91,45 +90,46 @@ namespace Agora
 
                 if (env.IsDevelopment())
                 {
+                    spa.Options.StartupTimeout = TimeSpan.FromSeconds(120);
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });
         }
     }
 
-    public class LoggingInMemoryStore : IContentStore {
-        private readonly ILogger logger;
-        private InMemoryContentStore _store;
-        public LoggingInMemoryStore(ILogger logger)
-        {
-            _store = new InMemoryContentStore();
-            this.logger = logger;
-        }
+    //public class LoggingInMemoryStore : IContentStore {
+    //    private readonly ILogger logger;
+    //    private InMemoryContentStore _store;
+    //    public LoggingInMemoryStore(ILogger logger)
+    //    {
+    //        _store = new InMemoryContentStore();
+    //        this.logger = logger;
+    //    }
 
-        public Task AddEntryAsync(CacheEntry entry, HttpResponseMessage response)
-        {
-            this.logger.LogInformation("Adding " + entry.Key);
-            return _store.AddEntryAsync(entry, response);
-        }
+    //    public Task AddEntryAsync(CacheEntry entry, HttpResponseMessage response)
+    //    {
+    //        this.logger.LogInformation("Adding " + entry.Key);
+    //        return _store.AddEntryAsync(entry, response);
+    //    }
 
-        public async Task<IEnumerable<CacheEntry>> GetEntriesAsync(CacheKey cacheKey)
-        {
-            this.logger.LogInformation("Trying to retrieve " + cacheKey.ToString());
-            var result = await _store.GetEntriesAsync(cacheKey);
-            this.logger.LogInformation("Retrieved " + result.Count() + " entries for " + cacheKey.ToString());
-            return result;
-        }
+    //    public async Task<IEnumerable<CacheEntry>> GetEntriesAsync(CacheKey cacheKey)
+    //    {
+    //        this.logger.LogInformation("Trying to retrieve " + cacheKey.ToString());
+    //        var result = await _store.GetEntriesAsync(cacheKey);
+    //        this.logger.LogInformation("Retrieved " + result.Count() + " entries for " + cacheKey.ToString());
+    //        return result;
+    //    }
 
-        public Task<HttpResponseMessage> GetResponseAsync(Guid variantId)
-        {
-            this.logger.LogInformation("Getting representation " + variantId);
-            return _store.GetResponseAsync(variantId);
-        }
+    //    public Task<HttpResponseMessage> GetResponseAsync(Guid variantId)
+    //    {
+    //        this.logger.LogInformation("Getting representation " + variantId);
+    //        return _store.GetResponseAsync(variantId);
+    //    }
 
-        public Task UpdateEntryAsync(CacheEntry entry, HttpResponseMessage response)
-        {
-            this.logger.LogInformation("Updating entry " + entry.Key);
-            return _store.UpdateEntryAsync(entry, response);
-        }
-    }
+    //    public Task UpdateEntryAsync(CacheEntry entry, HttpResponseMessage response)
+    //    {
+    //        this.logger.LogInformation("Updating entry " + entry.Key);
+    //        return _store.UpdateEntryAsync(entry, response);
+    //    }
+    //}
 }

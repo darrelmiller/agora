@@ -20,11 +20,13 @@ export default () => {
     var parameters = new URLSearchParams(location.search);
     var search = parameters.get("search")
 
+    const dispatch = useDispatch();
     if (search) {
-        const dispatch = useDispatch();
         dispatch(actionCreators.updateSearchTerm(search));
         dispatch(actionCreators.searchForTerm());
     }
+
+    dispatch(actionCreators.updateUriSpace());
 
     return (
         <Layout>

@@ -128,5 +128,20 @@ export const actionCreators = {
                     dispatch({ type: 'RECEIVE_GRAPHTERMS', results: data });
                 });
         }
+    },
+    updateUriSpace: (): AppThunkAction<KnownAction> => (dispatch, getState) => {
+        const appState = getState();
+
+        if (appState && appState.apiDescription && appState.apiDescription.csdl) {
+            // Fetch Urispace
+            fetch(`urispacedata`, { method: "POST", body: appState.apiDescription.csdl })
+                .then(response => response.json())
+                .then(data => {
+                    dispatch({
+                        type: 'RECEIVE_URISPACE',
+                        uriSpace: data
+                    });
+                });
+        }
     }
 };

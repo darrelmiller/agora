@@ -44,14 +44,17 @@ namespace Agora
             urlspace.Attach(betaDoc, "beta");
 
             // Get OpenAPI for current CSDL.
-            try
+            if (!string.IsNullOrWhiteSpace(csdl))
             {
-                var currentReview = await this.openApiService.ConvertCsdlUntilOpenApiDocumentAsync(csdl);
-                urlspace.Attach(currentReview, "current");
-            }
-            catch
-            {
-                // Show the tree anyway
+                try
+                {
+                    var currentReview = await this.openApiService.ConvertCsdlUntilOpenApiDocumentAsync(csdl);
+                    urlspace.Attach(currentReview, "current");
+                }
+                catch
+                {
+                    // Show the tree anyway
+                }
             }
 
             Response.ContentType = "application/json";
